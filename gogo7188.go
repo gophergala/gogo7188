@@ -15,6 +15,7 @@ import (
 )
 
 var CLIPPINGS_FILE string
+var ROOT string
 
 type KindleClippings []*klip.KindleClipping
 
@@ -41,8 +42,7 @@ func getBook(c web.C, w http.ResponseWriter, r *http.Request) {
 	}
 	sort.Sort(sort.Reverse(clips))
 
-	dir, _ := filepath.Abs(filepath.Dir(os.Args[0]))
-	tpl, _ := pongo2.DefaultSet.FromFile(dir + "/templates/index.tpl")
+	tpl, _ := pongo2.DefaultSet.FromFile(ROOT + "/templates/index.tpl")
 	tpl.ExecuteWriter(pongo2.Context{"clips": clips, "title": bookTitle}, w)
 }
 
@@ -56,18 +56,18 @@ func getIndex(c web.C, w http.ResponseWriter, r *http.Request) {
 	}
 	sort.Sort(sort.Reverse(clips))
 
-	dir, _ := filepath.Abs(filepath.Dir(os.Args[0]))
-	tpl, _ := pongo2.DefaultSet.FromFile(dir + "/templates/index.tpl")
+	tpl, _ := pongo2.DefaultSet.FromFile(ROOT + "/templates/index.tpl")
 	tpl.ExecuteWriter(pongo2.Context{"clips": clips}, w)
 }
 
 func main() {
 	flag.StringVar(&CLIPPINGS_FILE, "filename", "./clippings.txt", "My Clippings.txt file path")
+	ROOT, _ = filepath.Abs(filepath.Dir(os.Args[0]))
 
 	goji.Use(gzip.GzipHandler)
 
 	goji.Get("/book/:name", getBook)
 	goji.Get("/", getIndex)
-	goji.Get("/static/*", http.StripPrefix("/static/", http.FileServer(http.Dir("./static"))))
+	goji.Get("/static/*", http.StripPrefix("/static/", http.FileServer(http.Dir(ROOT+"/static"))))
 	goji.Serve()
 }

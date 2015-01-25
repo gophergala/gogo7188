@@ -82,7 +82,7 @@ blockquote.clip:after {
     font-size: 370%;
     line-height: 1em;
     position: absolute;
-    right: 0;
+    right: 0.3em;
     bottom: 0;
     color: #f0f0f0;
 }
