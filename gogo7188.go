@@ -3,6 +3,8 @@ package main
 import (
 	"flag"
 	"net/http"
+	"os"
+	"path/filepath"
 	"sort"
 
 	"github.com/flosch/pongo2"
@@ -39,7 +41,8 @@ func getBook(c web.C, w http.ResponseWriter, r *http.Request) {
 	}
 	sort.Sort(sort.Reverse(clips))
 
-	tpl, _ := pongo2.DefaultSet.FromFile("templates/index.tpl")
+	dir, _ := filepath.Abs(filepath.Dir(os.Args[0]))
+	tpl, _ := pongo2.DefaultSet.FromFile(dir + "/templates/index.tpl")
 	tpl.ExecuteWriter(pongo2.Context{"clips": clips, "title": bookTitle}, w)
 }
 
@@ -53,7 +56,8 @@ func getIndex(c web.C, w http.ResponseWriter, r *http.Request) {
 	}
 	sort.Sort(sort.Reverse(clips))
 
-	tpl, _ := pongo2.DefaultSet.FromFile("templates/index.tpl")
+	dir, _ := filepath.Abs(filepath.Dir(os.Args[0]))
+	tpl, _ := pongo2.DefaultSet.FromFile(dir + "/templates/index.tpl")
 	tpl.ExecuteWriter(pongo2.Context{"clips": clips}, w)
 }
 
